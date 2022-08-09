@@ -51,6 +51,8 @@ public enum AvailableCommandNames {
     PIDS_01_20("Available PIDs 01-20"),
     PIDS_21_40("Available PIDs 21-40"),
     PIDS_41_60("Available PIDs 41-60"),
+    PIDS_61_80("Available PIDs 61-80"),
+    PIDS_81_100("Available PIDs 81-100"),
     ABS_LOAD("Absolute load"),
     ENGINE_OIL_TEMP("Engine oil temperature"),
     AIR_FUEL_RATIO("Air/Fuel Ratio"),

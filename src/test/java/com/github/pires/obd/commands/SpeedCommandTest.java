@@ -12,6 +12,8 @@
  */
 package com.github.pires.obd.commands;
 
+import org.mockito.Mockito;
+import org.mockito.stubbing.OngoingStubbing;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeMethod;
@@ -20,6 +22,7 @@ import org.testng.annotations.Test;
 import java.io.IOException;
 import java.io.InputStream;
 
+import static org.mockito.Mockito.when;
 import static org.powermock.api.easymock.PowerMock.*;
 import static org.testng.Assert.assertEquals;
 
@@ -40,95 +43,57 @@ public class SpeedCommandTest {
         command = new SpeedCommand();
     }
 
+    public void mockInputStreamRead(InputStream in, String string) throws IOException {
+        OngoingStubbing<Integer> stub = when(in.read());
+        for (byte b : string.getBytes()) {
+            stub = stub.thenReturn((int)b);
+        }
+    }
+
     /**
      * Test for valid InputStream read, 64km/h
-     *
      * @throws IOException
      */
     @Test
     public void testValidSpeedMetric() throws IOException {
-        // mock InputStream read
-        mockIn = createMock(InputStream.class);
-        mockIn.read();
-        expectLastCall().andReturn((byte) '4');
-        expectLastCall().andReturn((byte) '1');
-        expectLastCall().andReturn((byte) ' ');
-        expectLastCall().andReturn((byte) '0');
-        expectLastCall().andReturn((byte) 'D');
-        expectLastCall().andReturn((byte) ' ');
-        expectLastCall().andReturn((byte) '4');
-        expectLastCall().andReturn((byte) '0');
-        expectLastCall().andReturn((byte) '>');
-
-        replayAll();
+        mockIn = Mockito.mock(InputStream.class);
+        mockInputStreamRead(mockIn, "41 0D 40>");
 
         // call the method to test
         command.readResult(mockIn);
         command.getFormattedResult();
         assertEquals(command.getMetricSpeed(), 64);
-
-        verifyAll();
     }
 
     /**
      * Test for valid InputStream read, 42.87mph
-     *
      * @throws IOException
      */
     @Test
     public void testValidSpeedImperial() throws IOException {
-        // mock InputStream read
         mockIn = createMock(InputStream.class);
-        mockIn.read();
-        expectLastCall().andReturn((byte) '4');
-        expectLastCall().andReturn((byte) '1');
-        expectLastCall().andReturn((byte) ' ');
-        expectLastCall().andReturn((byte) '0');
-        expectLastCall().andReturn((byte) 'D');
-        expectLastCall().andReturn((byte) ' ');
-        expectLastCall().andReturn((byte) '4');
-        expectLastCall().andReturn((byte) '5');
-        expectLastCall().andReturn((byte) '>');
-
-        replayAll();
+        mockInputStreamRead(mockIn, "41 0D 45>");
 
         // call the method to test
         command.readResult(mockIn);
         command.useImperialUnits = true;
         command.getFormattedResult();
         assertEquals(command.getImperialSpeed(), 42.874615f);
-
-        verifyAll();
     }
 
     /**
      * Test for valid InputStream read, 0km/h
-     *
      * @throws IOException
      */
     @Test
     public void testZeroSpeedMetric() throws IOException {
-        // mock InputStream read
         mockIn = createMock(InputStream.class);
-        mockIn.read();
-        expectLastCall().andReturn((byte) '4');
-        expectLastCall().andReturn((byte) '1');
-        expectLastCall().andReturn((byte) ' ');
-        expectLastCall().andReturn((byte) '0');
-        expectLastCall().andReturn((byte) 'D');
-        expectLastCall().andReturn((byte) ' ');
-        expectLastCall().andReturn((byte) '0');
-        expectLastCall().andReturn((byte) '0');
-        expectLastCall().andReturn((byte) '>');
-
-        replayAll();
+        mockInputStreamRead(mockIn, "41 0D 00>");
 
         // call the method to test
         command.readResult(mockIn);
         command.getFormattedResult();
         assertEquals(command.getMetricSpeed(), 0);
-
-        verifyAll();
     }
 
     /**

@@ -71,6 +71,10 @@ public abstract class ObdCommand {
         this(other.cmd);
     }
 
+    public String getCmd() {
+        return cmd;
+    }
+
     /**
      * Sends the OBD-II request and deals with the response.
      * <p>
@@ -154,6 +158,7 @@ public abstract class ObdCommand {
     private static Pattern BUSINIT_PATTERN = Pattern.compile("(BUS INIT)|(BUSINIT)|(\\.)");
     private static Pattern SEARCHING_PATTERN = Pattern.compile("SEARCHING");
     private static Pattern DIGITS_LETTERS_PATTERN = Pattern.compile("([0-9A-F])+");
+    private static Pattern MULTILINE_START_PATTERN = Pattern.compile("[0-9]{1,3}\r");
 
     protected String replaceAll(Pattern pattern, String input, String replacement) {
         return pattern.matcher(input).replaceAll(replacement);
