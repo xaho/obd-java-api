@@ -42,6 +42,7 @@ public abstract class ObdCommand {
     protected String cmd = null;
     protected boolean useImperialUnits = false;
     protected String rawData = null;
+    protected Boolean stripNewlines = true;
     protected Long responseDelayInMs = null;
     private long start;
     private long end;
@@ -158,7 +159,6 @@ public abstract class ObdCommand {
     private static Pattern BUSINIT_PATTERN = Pattern.compile("(BUS INIT)|(BUSINIT)|(\\.)");
     private static Pattern SEARCHING_PATTERN = Pattern.compile("SEARCHING");
     private static Pattern DIGITS_LETTERS_PATTERN = Pattern.compile("([0-9A-F])+");
-    private static Pattern MULTILINE_START_PATTERN = Pattern.compile("[0-9]{1,3}\r");
 
     protected String replaceAll(Pattern pattern, String input, String replacement) {
         return pattern.matcher(input).replaceAll(replacement);
@@ -229,7 +229,8 @@ public abstract class ObdCommand {
      * everything from the last carriage return before those two (trimmed above).
      */
         //kills multiline.. rawData = rawData.substring(rawData.lastIndexOf(13) + 1);
-        rawData = removeAll(WHITESPACE_PATTERN, rawData);//removes all [ \t\n\x0B\f\r]
+        if (stripNewlines)
+            rawData = removeAll(WHITESPACE_PATTERN, rawData);//removes all [ \t\n\x0B\f\r]
     }
 
     void checkForErrors() {

@@ -37,6 +37,11 @@ public class ThrottlePositionCommand extends PercentageObdCommand {
         super(other);
     }
 
+    public ThrottlePositionCommand setInstant(Boolean instant) {
+        this.cmd = instant ? "01 11 01" : "01 11";
+        return this;
+    }
+
     /** {@inheritDoc} */
     @Override
     public String getName() {

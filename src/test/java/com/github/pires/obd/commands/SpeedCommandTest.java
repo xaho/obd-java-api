@@ -17,13 +17,13 @@ import org.mockito.stubbing.OngoingStubbing;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
 import java.io.IOException;
 import java.io.InputStream;
 
 import static org.mockito.Mockito.when;
-import static org.powermock.api.easymock.PowerMock.*;
 import static org.testng.Assert.assertEquals;
 
 /**
@@ -50,50 +50,42 @@ public class SpeedCommandTest {
         }
     }
 
-    /**
-     * Test for valid InputStream read, 64km/h
-     * @throws IOException
-     */
-    @Test
-    public void testValidSpeedMetric() throws IOException {
+    @DataProvider
+    public static Object[][] SpeedCommandGetMetricSpeedTestData() {
+        return new Object[][] {
+                new Object[] {"41 0D 00>", 0},
+                new Object[] {"41 0D 40>", 64},
+        };
+    }
+    @DataProvider
+    public static Object[][] SpeedCommandGetImperialSpeedTestData() {
+        return new Object[][] {
+                new Object[] {"41 0D 00>", 0},
+                new Object[] {"41 0D 45>", 42.874615f},
+        };
+    }
+
+    @Test(dataProvider = "SpeedCommandGetMetricSpeedTestData")
+    public void testValidMetricSpeed(String response, int n) throws IOException {
         mockIn = Mockito.mock(InputStream.class);
-        mockInputStreamRead(mockIn, "41 0D 40>");
+        mockInputStreamRead(mockIn, response);
 
         // call the method to test
         command.readResult(mockIn);
         command.getFormattedResult();
-        assertEquals(command.getMetricSpeed(), 64);
+        assertEquals(command.getMetricSpeed(), n);
     }
 
-    /**
-     * Test for valid InputStream read, 42.87mph
-     * @throws IOException
-     */
-    @Test
-    public void testValidSpeedImperial() throws IOException {
-        mockIn = createMock(InputStream.class);
-        mockInputStreamRead(mockIn, "41 0D 45>");
+    @Test(dataProvider = "SpeedCommandGetImperialSpeedTestData")
+    public void testValidImperialSpeed(String response, float n) throws IOException {
+        mockIn = Mockito.mock(InputStream.class);
+        mockInputStreamRead(mockIn, response);
 
         // call the method to test
         command.readResult(mockIn);
         command.useImperialUnits = true;
         command.getFormattedResult();
-        assertEquals(command.getImperialSpeed(), 42.874615f);
-    }
-
-    /**
-     * Test for valid InputStream read, 0km/h
-     * @throws IOException
-     */
-    @Test
-    public void testZeroSpeedMetric() throws IOException {
-        mockIn = createMock(InputStream.class);
-        mockInputStreamRead(mockIn, "41 0D 00>");
-
-        // call the method to test
-        command.readResult(mockIn);
-        command.getFormattedResult();
-        assertEquals(command.getMetricSpeed(), 0);
+        assertEquals(command.getImperialSpeed(), n);
     }
 
     /**

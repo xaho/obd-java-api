@@ -39,6 +39,11 @@ public class RPMCommand extends ObdCommand {
         super(other);
     }
 
+    public RPMCommand setInstant(Boolean instant) {
+        this.cmd = instant ? "01 0C 01" : "01 0C";
+        return this;
+    }
+
     /** {@inheritDoc} */
     @Override
     protected void performCalculations() {
