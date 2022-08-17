@@ -39,7 +39,7 @@ public class SpeedCommand extends ObdCommand implements SystemOfUnits {
     }
 
     public SpeedCommand setInstant(Boolean instant) {
-        this.cmd = instant ? "01 0D 01" : "01 0D";
+        this.cmd = instant ? "01 0D 1" : "01 0D";
         return this;
     }
 

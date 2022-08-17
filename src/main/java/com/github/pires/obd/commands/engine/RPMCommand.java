@@ -40,7 +40,7 @@ public class RPMCommand extends ObdCommand {
     }
 
     public RPMCommand setInstant(Boolean instant) {
-        this.cmd = instant ? "01 0C 01" : "01 0C";
+        this.cmd = instant ? "01 0C 1" : "01 0C";
         return this;
     }
 
