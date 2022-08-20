@@ -20,7 +20,7 @@ import org.testng.annotations.Test;
 import java.io.IOException;
 import java.io.InputStream;
 
-import static org.powermock.api.easymock.PowerMock.*;
+import static com.github.pires.obd.TestUtils.mockInputStreamRead;
 import static org.testng.Assert.assertEquals;
 
 /**
@@ -36,9 +36,6 @@ public class VinCommandTest {
     @BeforeMethod
     public void setUp() throws Exception {
         command = new VinCommand();
-        // mock InputStream read
-        mockIn = createMock(InputStream.class);
-        mockIn.read();
     }
 
     /**
@@ -57,22 +54,14 @@ public class VinCommandTest {
      */
     @Test
     public void vinCAN() throws IOException {
-        byte[] v = ("014\n" +
+        mockIn = mockInputStreamRead("014\n" +
                 "0: 49 02 01 57 50 30\n" +
                 "1: 5A 5A 5A 39 39 5A 54\n" +
-                "2: 53 33 39 32 31 32 34>").getBytes();
-        for (byte b : v) {
-            expectLastCall().andReturn(b);
-        }
-        replayAll();
-        String res = "WP0ZZZ99ZTS392124";
+                "2: 53 33 39 32 31 32 34>");
 
-        // call the method to test
         command.readResult(mockIn);
 
-        assertEquals(command.getFormattedResult(), res);
-
-        verifyAll();
+        assertEquals(command.getFormattedResult(), "WP0ZZZ99ZTS392124");
     }
 
     /**
@@ -82,23 +71,14 @@ public class VinCommandTest {
      */
     @Test
     public void vin() throws IOException {
-        byte[] v = ("49 02 01 00 00 00 57\n" +
+        InputStream mockIn = mockInputStreamRead("49 02 01 00 00 00 57\n" +
                 "49 02 02 50 30 5A 5A\n" +
                 "49 02 03 5A 39 39 5A\n" +
                 "49 02 04 54 53 33 39\n" +
-                "49 02 05 32 31 32 34>").getBytes();
-        for (byte b : v) {
-            expectLastCall().andReturn(b);
-        }
+                "49 02 05 32 31 32 34>");
 
-        replayAll();
-        String res = "WP0ZZZ99ZTS392124";
-
-        // call the method to test
         command.readResult(mockIn);
 
-        assertEquals(command.getFormattedResult(), res);
-
-        verifyAll();
+        assertEquals(command.getFormattedResult(), "WP0ZZZ99ZTS392124");
     }
 }

@@ -21,7 +21,7 @@ import org.testng.annotations.Test;
 import java.io.IOException;
 import java.io.InputStream;
 
-import static org.powermock.api.easymock.PowerMock.*;
+import static com.github.pires.obd.TestUtils.mockInputStreamRead;
 import static org.testng.Assert.assertEquals;
 
 /**
@@ -47,26 +47,9 @@ public class ThrottleCommandTest {
      */
     @Test
     public void testMaxThrottlePositionValue() throws IOException {
-        // mock InputStream read
-        mockIn = createMock(InputStream.class);
-        mockIn.read();
-        expectLastCall().andReturn((byte) '4');
-        expectLastCall().andReturn((byte) '1');
-        expectLastCall().andReturn((byte) ' ');
-        expectLastCall().andReturn((byte) '1');
-        expectLastCall().andReturn((byte) '1');
-        expectLastCall().andReturn((byte) ' ');
-        expectLastCall().andReturn((byte) 'F');
-        expectLastCall().andReturn((byte) 'F');
-        expectLastCall().andReturn((byte) '>');
-
-        replayAll();
-
-        // call the method to test
+        mockIn = mockInputStreamRead("41 11 FF>");
         command.readResult(mockIn);
         assertEquals(command.getPercentage(), 100f);
-
-        verifyAll();
     }
 
     /**
@@ -76,26 +59,9 @@ public class ThrottleCommandTest {
      */
     @Test
     public void testSomeThrottlePositionValue() throws IOException {
-        // mock InputStream read
-        mockIn = createMock(InputStream.class);
-        mockIn.read();
-        expectLastCall().andReturn((byte) '4');
-        expectLastCall().andReturn((byte) '1');
-        expectLastCall().andReturn((byte) ' ');
-        expectLastCall().andReturn((byte) '1');
-        expectLastCall().andReturn((byte) '1');
-        expectLastCall().andReturn((byte) ' ');
-        expectLastCall().andReturn((byte) '9');
-        expectLastCall().andReturn((byte) '5');
-        expectLastCall().andReturn((byte) '>');
-
-        replayAll();
-
-        // call the method to test
+        mockIn = mockInputStreamRead("41 11 95>");
         command.readResult(mockIn);
         assertEquals(command.getPercentage(), 58.431374f);
-
-        verifyAll();
     }
 
     /**
@@ -105,26 +71,9 @@ public class ThrottleCommandTest {
      */
     @Test
     public void testMinThrottlePositionValue() throws IOException {
-        // mock InputStream read
-        mockIn = createMock(InputStream.class);
-        mockIn.read();
-        expectLastCall().andReturn((byte) '4');
-        expectLastCall().andReturn((byte) '1');
-        expectLastCall().andReturn((byte) ' ');
-        expectLastCall().andReturn((byte) '1');
-        expectLastCall().andReturn((byte) '1');
-        expectLastCall().andReturn((byte) ' ');
-        expectLastCall().andReturn((byte) '0');
-        expectLastCall().andReturn((byte) '0');
-        expectLastCall().andReturn((byte) '>');
-
-        replayAll();
-
-        // call the method to test
+        mockIn = mockInputStreamRead("41 11 00>");
         command.readResult(mockIn);
         assertEquals(command.getPercentage(), 0f);
-
-        verifyAll();
     }
 
     /**

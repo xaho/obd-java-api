@@ -21,7 +21,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
-import static org.powermock.api.easymock.PowerMock.*;
+import static com.github.pires.obd.TestUtils.mockInputStreamRead;
 
 /**
  * Test results with echo on and off.
@@ -47,23 +47,8 @@ public class UnsupportedCommandExceptionTest {
      */
     @Test(expectedExceptions = UnsupportedCommandException.class)
     public void testUnsupportedVin() throws IOException, InterruptedException {
-        // mock InputStream read
-        mockIn = createMock(InputStream.class);
-        mockIn.read();
-        expectLastCall().andReturn((byte) '7');
-        expectLastCall().andReturn((byte) 'F');
-        expectLastCall().andReturn((byte) '0');
-        expectLastCall().andReturn((byte) '9');
-        expectLastCall().andReturn((byte) '1');
-        expectLastCall().andReturn((byte) '2');
-        expectLastCall().andReturn((byte) '>');
-
-        replayAll();
-
-        // call the method to test
+        mockIn = mockInputStreamRead("7F0912>");
         command.run(mockIn, new ByteArrayOutputStream());
-
-        verifyAll();
     }
 
     /**
@@ -73,23 +58,8 @@ public class UnsupportedCommandExceptionTest {
      */
     @Test(expectedExceptions = UnsupportedCommandException.class)
     public void testUnsupportedSpeed() throws IOException, InterruptedException {
-        // mock InputStream read
-        mockIn = createMock(InputStream.class);
-        mockIn.read();
-        expectLastCall().andReturn((byte) '7');
-        expectLastCall().andReturn((byte) 'F');
-        expectLastCall().andReturn((byte) '0');
-        expectLastCall().andReturn((byte) '1');
-        expectLastCall().andReturn((byte) '1');
-        expectLastCall().andReturn((byte) '2');
-        expectLastCall().andReturn((byte) '>');
-
-        replayAll();
-
-        // call the method to test
+        mockIn = mockInputStreamRead("7F0112>");
         command.run(mockIn, new ByteArrayOutputStream());
-
-        verifyAll();
     }
 
 }

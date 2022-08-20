@@ -21,7 +21,7 @@ import org.testng.annotations.Test;
 import java.io.IOException;
 import java.io.InputStream;
 
-import static org.powermock.api.easymock.PowerMock.*;
+import static com.github.pires.obd.TestUtils.mockInputStreamRead;
 import static org.testng.Assert.assertEquals;
 
 /**
@@ -48,26 +48,9 @@ public class AirIntakeTempCommandTest {
      */
     @Test
     public void testValidTemperatureCelsius() throws IOException {
-        // mock InputStream read
-        mockIn = createMock(InputStream.class);
-        mockIn.read();
-        expectLastCall().andReturn((byte) '4');
-        expectLastCall().andReturn((byte) '1');
-        expectLastCall().andReturn((byte) ' ');
-        expectLastCall().andReturn((byte) '0');
-        expectLastCall().andReturn((byte) 'F');
-        expectLastCall().andReturn((byte) ' ');
-        expectLastCall().andReturn((byte) '4');
-        expectLastCall().andReturn((byte) '0');
-        expectLastCall().andReturn((byte) '>');
-
-        replayAll();
-
-        // call the method to test
+        mockIn = mockInputStreamRead("41 0F 40>");
         command.readResult(mockIn);
         assertEquals(command.getTemperature(), 24f);
-
-        verifyAll();
     }
 
     /**
@@ -77,27 +60,10 @@ public class AirIntakeTempCommandTest {
      */
     @Test
     public void testValidTemperatureFahrenheit() throws IOException {
-        // mock InputStream read
-        mockIn = createMock(InputStream.class);
-        mockIn.read();
-        expectLastCall().andReturn((byte) '4');
-        expectLastCall().andReturn((byte) '1');
-        expectLastCall().andReturn((byte) ' ');
-        expectLastCall().andReturn((byte) '0');
-        expectLastCall().andReturn((byte) 'F');
-        expectLastCall().andReturn((byte) ' ');
-        expectLastCall().andReturn((byte) '4');
-        expectLastCall().andReturn((byte) '5');
-        expectLastCall().andReturn((byte) '>');
-
-        replayAll();
-
-        // call the method to test
+        mockIn = mockInputStreamRead("41 0F 45>");
         command.readResult(mockIn);
         command.useImperialUnits = true;
         assertEquals(command.getImperialUnit(), 84.2f);
-
-        verifyAll();
     }
 
     /**
@@ -107,26 +73,9 @@ public class AirIntakeTempCommandTest {
      */
     @Test
     public void testValidTemperatureZeroCelsius() throws IOException {
-        // mock InputStream read
-        mockIn = createMock(InputStream.class);
-        mockIn.read();
-        expectLastCall().andReturn((byte) '4');
-        expectLastCall().andReturn((byte) '1');
-        expectLastCall().andReturn((byte) ' ');
-        expectLastCall().andReturn((byte) '0');
-        expectLastCall().andReturn((byte) 'F');
-        expectLastCall().andReturn((byte) ' ');
-        expectLastCall().andReturn((byte) '2');
-        expectLastCall().andReturn((byte) '8');
-        expectLastCall().andReturn((byte) '>');
-
-        replayAll();
-
-        // call the method to test
+        mockIn = mockInputStreamRead("41 0F 28>");
         command.readResult(mockIn);
         assertEquals(command.getTemperature(), 0f);
-
-        verifyAll();
     }
 
     /**

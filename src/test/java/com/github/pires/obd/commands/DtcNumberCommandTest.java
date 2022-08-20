@@ -21,7 +21,7 @@ import org.testng.annotations.Test;
 import java.io.IOException;
 import java.io.InputStream;
 
-import static org.powermock.api.easymock.PowerMock.*;
+import static com.github.pires.obd.TestUtils.mockInputStreamRead;
 import static org.testng.Assert.*;
 
 /**
@@ -48,29 +48,11 @@ public class DtcNumberCommandTest {
      */
     @Test
     public void testMILOn() throws IOException {
-        // mock InputStream read
-        mockIn = createMock(InputStream.class);
-        mockIn.read();
-        expectLastCall().andReturn((byte) '4');
-        expectLastCall().andReturn((byte) '1');
-        expectLastCall().andReturn((byte) ' ');
-        expectLastCall().andReturn((byte) '0');
-        expectLastCall().andReturn((byte) '1');
-        expectLastCall().andReturn((byte) ' ');
-        expectLastCall().andReturn((byte) '9');
-        expectLastCall().andReturn((byte) 'F');
-        expectLastCall().andReturn((byte) '>');
-
-        replayAll();
-
-        // call the method to test
+        mockIn = mockInputStreamRead("41 01 9F>");
         command.readResult(mockIn);
         command.getFormattedResult();
-
         assertTrue(command.getMilOn());
         assertEquals(command.getTotalAvailableCodes(), 31);
-
-        verifyAll();
     }
 
     /**
@@ -80,29 +62,11 @@ public class DtcNumberCommandTest {
      */
     @Test
     public void testMILOff() throws IOException {
-        // mock InputStream read
-        mockIn = createMock(InputStream.class);
-        mockIn.read();
-        expectLastCall().andReturn((byte) '4');
-        expectLastCall().andReturn((byte) '1');
-        expectLastCall().andReturn((byte) ' ');
-        expectLastCall().andReturn((byte) '0');
-        expectLastCall().andReturn((byte) '1');
-        expectLastCall().andReturn((byte) ' ');
-        expectLastCall().andReturn((byte) '0');
-        expectLastCall().andReturn((byte) 'F');
-        expectLastCall().andReturn((byte) '>');
-
-        replayAll();
-
-        // call the method to test
+        mockIn = mockInputStreamRead("41 01 0F>");
         command.readResult(mockIn);
         command.getFormattedResult();
-
         assertFalse(command.getMilOn());
         assertEquals(command.getTotalAvailableCodes(), 15);
-
-        verifyAll();
     }
 
     /**

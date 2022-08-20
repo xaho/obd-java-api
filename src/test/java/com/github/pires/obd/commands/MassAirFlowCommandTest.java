@@ -21,7 +21,7 @@ import org.testng.annotations.Test;
 import java.io.IOException;
 import java.io.InputStream;
 
-import static org.powermock.api.easymock.PowerMock.*;
+import static com.github.pires.obd.TestUtils.mockInputStreamRead;
 import static org.testng.Assert.assertEquals;
 
 /**
@@ -47,29 +47,9 @@ public class MassAirFlowCommandTest {
      */
     @Test
     public void testMaxMAFValue() throws IOException {
-        // mock InputStream read
-        mockIn = createMock(InputStream.class);
-        mockIn.read();
-        expectLastCall().andReturn((byte) '4');
-        expectLastCall().andReturn((byte) '1');
-        expectLastCall().andReturn((byte) ' ');
-        expectLastCall().andReturn((byte) '1');
-        expectLastCall().andReturn((byte) '0');
-        expectLastCall().andReturn((byte) ' ');
-        expectLastCall().andReturn((byte) 'F');
-        expectLastCall().andReturn((byte) 'F');
-        expectLastCall().andReturn((byte) ' ');
-        expectLastCall().andReturn((byte) 'F');
-        expectLastCall().andReturn((byte) 'F');
-        expectLastCall().andReturn((byte) '>');
-
-        replayAll();
-
-        // call the method to test
+        mockIn = mockInputStreamRead("41 10 FF FF>");
         command.readResult(mockIn);
         assertEquals(command.getMAF(), 655.3499755859375d);
-
-        verifyAll();
     }
 
     /**
@@ -79,29 +59,9 @@ public class MassAirFlowCommandTest {
      */
     @Test
     public void testSomeMAFValue() throws IOException {
-        // mock InputStream read
-        mockIn = createMock(InputStream.class);
-        mockIn.read();
-        expectLastCall().andReturn((byte) '4');
-        expectLastCall().andReturn((byte) '1');
-        expectLastCall().andReturn((byte) ' ');
-        expectLastCall().andReturn((byte) '1');
-        expectLastCall().andReturn((byte) '0');
-        expectLastCall().andReturn((byte) ' ');
-        expectLastCall().andReturn((byte) '9');
-        expectLastCall().andReturn((byte) '5');
-        expectLastCall().andReturn((byte) ' ');
-        expectLastCall().andReturn((byte) '1');
-        expectLastCall().andReturn((byte) '1');
-        expectLastCall().andReturn((byte) '>');
-
-        replayAll();
-
-        // call the method to test
+        mockIn = mockInputStreamRead("41 10 95 11>");
         command.readResult(mockIn);
         assertEquals(command.getMAF(), 381.6099853515625d);
-
-        verifyAll();
     }
 
     /**
@@ -111,29 +71,9 @@ public class MassAirFlowCommandTest {
      */
     @Test
     public void testMinMAFValue() throws IOException {
-        // mock InputStream read
-        mockIn = createMock(InputStream.class);
-        mockIn.read();
-        expectLastCall().andReturn((byte) '4');
-        expectLastCall().andReturn((byte) '1');
-        expectLastCall().andReturn((byte) ' ');
-        expectLastCall().andReturn((byte) '1');
-        expectLastCall().andReturn((byte) '0');
-        expectLastCall().andReturn((byte) ' ');
-        expectLastCall().andReturn((byte) '0');
-        expectLastCall().andReturn((byte) '0');
-        expectLastCall().andReturn((byte) ' ');
-        expectLastCall().andReturn((byte) '0');
-        expectLastCall().andReturn((byte) '0');
-        expectLastCall().andReturn((byte) '>');
-
-        replayAll();
-
-        // call the method to test
+        mockIn = mockInputStreamRead("41 10 00 00>");
         command.readResult(mockIn);
         assertEquals(command.getMAF(), 0d);
-
-        verifyAll();
     }
 
     /**

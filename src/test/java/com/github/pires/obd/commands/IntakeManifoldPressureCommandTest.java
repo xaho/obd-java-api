@@ -21,7 +21,7 @@ import org.testng.annotations.Test;
 import java.io.IOException;
 import java.io.InputStream;
 
-import static org.powermock.api.easymock.PowerMock.*;
+import static com.github.pires.obd.TestUtils.mockInputStreamRead;
 import static org.testng.Assert.assertEquals;
 
 /**
@@ -48,27 +48,10 @@ public class IntakeManifoldPressureCommandTest {
      */
     @Test
     public void testValidPressureMetric() throws IOException {
-        // mock InputStream read
-        mockIn = createMock(InputStream.class);
-        mockIn.read();
-        expectLastCall().andReturn((byte) '4');
-        expectLastCall().andReturn((byte) '1');
-        expectLastCall().andReturn((byte) ' ');
-        expectLastCall().andReturn((byte) '0');
-        expectLastCall().andReturn((byte) 'B');
-        expectLastCall().andReturn((byte) ' ');
-        expectLastCall().andReturn((byte) '6');
-        expectLastCall().andReturn((byte) '4');
-        expectLastCall().andReturn((byte) '>');
-
-        replayAll();
-
-        // call the method to test
+        mockIn = mockInputStreamRead("41 0B 64>");
         command.readResult(mockIn);
         command.useImperialUnits(false);
         assertEquals(command.getMetricUnit(), 100);
-
-        verifyAll();
     }
 
     /**
@@ -78,27 +61,10 @@ public class IntakeManifoldPressureCommandTest {
      */
     @Test
     public void testValidPressureImperial() throws IOException {
-        // mock InputStream read
-        mockIn = createMock(InputStream.class);
-        mockIn.read();
-        expectLastCall().andReturn((byte) '4');
-        expectLastCall().andReturn((byte) '1');
-        expectLastCall().andReturn((byte) ' ');
-        expectLastCall().andReturn((byte) '0');
-        expectLastCall().andReturn((byte) 'B');
-        expectLastCall().andReturn((byte) ' ');
-        expectLastCall().andReturn((byte) '6');
-        expectLastCall().andReturn((byte) '4');
-        expectLastCall().andReturn((byte) '>');
-
-        replayAll();
-
-        // call the method to test
+        mockIn = mockInputStreamRead("41 0B 64>");
         command.readResult(mockIn);
         command.useImperialUnits(true);
         assertEquals(command.getImperialUnit(), 14.503774f);
-
-        verifyAll();
     }
 
     /**

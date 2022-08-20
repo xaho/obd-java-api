@@ -42,7 +42,6 @@ public abstract class ObdCommand {
     protected String cmd = null;
     protected boolean useImperialUnits = false;
     protected String rawData = null;
-    protected Boolean stripNewlines = true;
     protected Long responseDelayInMs = null;
     private long start;
     private long end;
@@ -229,8 +228,7 @@ public abstract class ObdCommand {
      * everything from the last carriage return before those two (trimmed above).
      */
         //kills multiline.. rawData = rawData.substring(rawData.lastIndexOf(13) + 1);
-        if (stripNewlines)
-            rawData = removeAll(WHITESPACE_PATTERN, rawData);//removes all [ \t\n\x0B\f\r]
+        rawData = removeAll(WHITESPACE_PATTERN, rawData);//removes all [ \t\n\x0B\f\r]
     }
 
     void checkForErrors() {

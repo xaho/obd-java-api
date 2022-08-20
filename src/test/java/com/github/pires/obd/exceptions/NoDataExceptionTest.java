@@ -21,7 +21,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
-import static org.powermock.api.easymock.PowerMock.*;
+import static com.github.pires.obd.TestUtils.mockInputStreamRead;
 
 /**
  * Test results with echo on and off.
@@ -47,24 +47,8 @@ public class NoDataExceptionTest {
      */
     @Test(expectedExceptions = NoDataException.class)
     public void testValidSpeedMetricWithMessage() throws IOException, InterruptedException {
-        // mock InputStream read
-        mockIn = createMock(InputStream.class);
-        mockIn.read();
-        expectLastCall().andReturn((byte) 'N');
-        expectLastCall().andReturn((byte) 'O');
-        expectLastCall().andReturn((byte) ' ');
-        expectLastCall().andReturn((byte) 'D');
-        expectLastCall().andReturn((byte) 'A');
-        expectLastCall().andReturn((byte) 'T');
-        expectLastCall().andReturn((byte) 'A');
-        expectLastCall().andReturn((byte) '>');
-
-        replayAll();
-
-        // call the method to test
+        mockIn = mockInputStreamRead("NO DATA>");
         command.run(mockIn, new ByteArrayOutputStream());
-
-        verifyAll();
     }
 
 }
